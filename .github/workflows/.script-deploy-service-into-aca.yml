@@ -16,7 +16,7 @@ on:
 
 env:
   PROJECT_NAME: cloudtrack
-  SERVICE_NAME: compet
+  SERVICE_NAME: compt
 
 jobs:
   deploy-service-into-aca:

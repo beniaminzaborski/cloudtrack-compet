@@ -16,7 +16,7 @@ on:
 
 env:
   PROJECT_NAME: cloudtrack
-  SERVICE_NAME: compet
+  SERVICE_NAME: compt
   DOTNET_VERSION: 9.0.x
 
 jobs:
