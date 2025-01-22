@@ -7,7 +7,7 @@
 
 ## General info
 CloudTrack is an example application to support run competitions.
-This repository contains a service that manages the competitionns.
+This repository contains a service that manages the competitions.
 
 ## Technologies
 Project is created with:
