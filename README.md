@@ -1,0 +1,29 @@
+# CloudTrack - Competitions
+
+## Table of contents
+* [General info](#general-info)
+* [Technologies](#technologies)
+* [Repositories](#repositories)
+
+## General info
+CloudTrack is an example application to support run competitions.
+This repository contains a service that manages the competitionns.
+
+## Technologies
+Project is created with:
+* C#
+* .NET 9
+* Entity Framework Core
+* PostgreSQL
+* Open Telemetry
+* MassTransit
+* MediatR
+* Fluent Migrator
+* Fluent Validation
+* Scrutor
+* Azure Service Bus
+
+## Repositories
+* Infrastructure: [github.com/beniaminzaborski/cloudtrack-infra](https://github.com/beniaminzaborski/cloudtrack-infra)
+* Competitions: [github.com/beniaminzaborski/cloudtrack-compt](https://github.com/beniaminzaborski/cloudtrack-compt)
+* Registration: [github.com/beniaminzaborski/cloudtrack-regstr](https://github.com/beniaminzaborski/cloudtrack-regstr)
