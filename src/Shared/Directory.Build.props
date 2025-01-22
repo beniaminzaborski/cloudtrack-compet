@@ -1,7 +1,7 @@
 <Project>
 
-    <PropertyGroup>
-		<AdministrationVersion>1.2.0</AdministrationVersion>
-    </PropertyGroup>
+  <PropertyGroup>
+		<CompetitionVersion>1.0.0</CompetitionVersion>
+  </PropertyGroup>
 
 </Project>

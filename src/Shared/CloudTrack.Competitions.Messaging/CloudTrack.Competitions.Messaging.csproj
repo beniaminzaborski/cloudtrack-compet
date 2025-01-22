@@ -3,11 +3,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>$(AdministrationVersion)</Version>
-    <PackageId>Bz.F8t.Administration.Messaging</PackageId>
+    <Version>$(CompetitionVersion)</Version>
+    <PackageId>CloudTrack.Competitions.Messaging</PackageId>
     <Authors>Beniamin Zaborski</Authors>
     <Company>Beniamin Zaborski</Company>
-    <Description>This package contains F8T integration events</Description>
+    <Description>This package contains CloudTrack Competitions integration events</Description>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <LangVersion>latest</LangVersion>
