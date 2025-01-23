@@ -4,7 +4,7 @@ on:
   workflow_dispatch: {}
   push:
     branches:
-    - feature/migration-to-net-9
+    - main
     paths-ignore:
     - 'src/Shared/**'
     - 'README.ME'
