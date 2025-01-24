@@ -2,7 +2,7 @@ using CloudTrack.Competitions.Application;
 using CloudTrack.Competitions.Infrastructure;
 using CloudTrack.Competitions.WebAPI;
 
-const string serviceName = "Fott-Administration";
+const string serviceName = "CloudTrack-Competitions";
 const string serviceVersion = "1.0.0";
 
 var builder = WebApplication.CreateBuilder(args);
