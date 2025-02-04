@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CloudTrack.Competitions.CompleteRegistrationsJob": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-name: Build & deploy service in dev
+name: Build & deploy job in dev
 
 on:
   workflow_dispatch: {}
@@ -7,7 +7,11 @@ on:
     - main
     paths-ignore:
     - 'src/Shared/**'
-    - 'src/Jobs/**'
+    - 'src/CloudTrack.Competitions.AppHost/**'
+    - 'CloudTrack.Competitions.Application/**'
+    - 'CloudTrack.Competitions.Domain/**'
+    - 'CloudTrack.Competitions.Infrastructure/**'
+    - 'CloudTrack.Competitions.WebAPI/**'
     - 'README.ME'
     - 'doc/**'
     - 'test/**'
@@ -18,8 +22,8 @@ jobs:
     with:
       ENVIRONMENT_TYPE: dev
       PROJECT_NAME: cloudtrack
-      SERVICE_NAME: compet
-      DOCKERFILE_PATH: ./src/CloudTrack.Competitions.WebAPI/Dockerfile
+      SERVICE_NAME: competjob
+      DOCKERFILE_PATH: ./src/Jobs/CloudTrack.Competitions.CompleteRegistrationsJob/Dockerfile
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
@@ -32,7 +36,7 @@ jobs:
     with:
       ENVIRONMENT_TYPE: dev
       PROJECT_NAME: cloudtrack
-      SERVICE_NAME: compet
+      SERVICE_NAME: competjob
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}

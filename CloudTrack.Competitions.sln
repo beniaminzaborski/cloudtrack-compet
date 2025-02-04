@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\.script-build-service-docker-image-and-push-into-acr.yml = .github\workflows\.script-build-service-docker-image-and-push-into-acr.yml
 		.github\workflows\.script-deploy-service-into-aca.yml = .github\workflows\.script-deploy-service-into-aca.yml
+		.github\workflows\build-and-deploy-job-to-aca-dev.yml = .github\workflows\build-and-deploy-job-to-aca-dev.yml
 		.github\workflows\build-and-deploy-to-aca-dev.yml = .github\workflows\build-and-deploy-to-aca-dev.yml
 		.github\workflows\build-and-publish-nugets.yml = .github\workflows\build-and-publish-nugets.yml
 	EndProjectSection
@@ -40,6 +41,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTrack.Competitions.Messaging", "src\Shared\CloudTrack.Competitions.Messaging\CloudTrack.Competitions.Messaging.csproj", "{D5A78708-D1CC-4515-836A-6E29BE05203A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudTrack.Competitions.AppHost", "src\CloudTrack.Competitions.AppHost\CloudTrack.Competitions.AppHost.csproj", "{DE679601-C7D5-4EE4-ACD5-92F6F735BC01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Jobs", "Jobs", "{C404B9D2-1A00-4593-9CBB-10C0291A3A9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudTrack.Competitions.CompleteRegistrationsJob", "src\Jobs\CloudTrack.Competitions.CompleteRegistrationsJob\CloudTrack.Competitions.CompleteRegistrationsJob.csproj", "{BD3072B9-0669-42D1-9FE0-7D393C857BF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +80,10 @@ Global
 		{DE679601-C7D5-4EE4-ACD5-92F6F735BC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE679601-C7D5-4EE4-ACD5-92F6F735BC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE679601-C7D5-4EE4-ACD5-92F6F735BC01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD3072B9-0669-42D1-9FE0-7D393C857BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3072B9-0669-42D1-9FE0-7D393C857BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3072B9-0669-42D1-9FE0-7D393C857BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3072B9-0669-42D1-9FE0-7D393C857BF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +98,8 @@ Global
 		{6199844C-9B68-4609-8F0E-B581536FBCB0} = {1C3C3228-CF7D-4CD0-8CC6-659109DF05FE}
 		{D5A78708-D1CC-4515-836A-6E29BE05203A} = {6199844C-9B68-4609-8F0E-B581536FBCB0}
 		{DE679601-C7D5-4EE4-ACD5-92F6F735BC01} = {1C3C3228-CF7D-4CD0-8CC6-659109DF05FE}
+		{C404B9D2-1A00-4593-9CBB-10C0291A3A9B} = {1C3C3228-CF7D-4CD0-8CC6-659109DF05FE}
+		{BD3072B9-0669-42D1-9FE0-7D393C857BF6} = {C404B9D2-1A00-4593-9CBB-10C0291A3A9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97F31DEE-3931-45EB-9080-33C0E8B6E949}
