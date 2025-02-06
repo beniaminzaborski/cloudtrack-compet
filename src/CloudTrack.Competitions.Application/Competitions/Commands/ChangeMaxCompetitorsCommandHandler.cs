@@ -9,12 +9,9 @@ internal class ChangeMaxCompetitorsCommandHandler(
     IUnitOfWork unitOfWork,
     ICompetitionRepository competitionRepository) : IRequestHandler<ChangeMaxCompetitorsCommand>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ICompetitionRepository _competitionRepository = competitionRepository;
-
     public async Task Handle(ChangeMaxCompetitorsCommand request, CancellationToken cancellationToken)
     {
-        var competition = await _competitionRepository.GetAsync(CompetitionId.From(request.Id)) ?? throw new NotFoundException();
+        var competition = await competitionRepository.GetAsync(CompetitionId.From(request.Id)) ?? throw new NotFoundException();
         
         try
         {
@@ -25,7 +22,7 @@ internal class ChangeMaxCompetitorsCommandHandler(
             throw new Common.Exceptions.ValidationException("Changing maximum numbers of competitors is not allowed");
         }
 
-        await _competitionRepository.UpdateAsync(competition);
-        await _unitOfWork.CommitAsync();
+        await competitionRepository.UpdateAsync(competition);
+        await unitOfWork.CommitAsync();
     }
 }

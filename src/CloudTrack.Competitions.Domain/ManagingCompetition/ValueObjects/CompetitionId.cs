@@ -2,10 +2,8 @@
 
 namespace CloudTrack.Competitions.Domain.ManagingCompetition;
 
-public record CompetitionId : EntityId<Guid>
+public record CompetitionId(Guid Value) : EntityId<Guid>(Value)
 {
-    public CompetitionId(Guid value) : base(value) { }
-
     public static CompetitionId From(Guid value)
     {
         return new CompetitionId(value);

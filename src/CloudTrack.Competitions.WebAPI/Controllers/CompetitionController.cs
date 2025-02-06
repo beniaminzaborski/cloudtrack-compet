@@ -11,14 +11,12 @@ namespace CloudTrack.Competitions.WebAPI.Controllers;
 public class CompetitionController(
     IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator = mediator;
-
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateAsync([FromBody]CreateCompetitionDto dto)
     {
         var command = new CreateCompetitionCommand(dto.Name, dto.StartAt, dto.Distance, dto.Place, dto.MaxCompetitors);
-        var id = await _mediator.Send(command);
+        var id = await mediator.Send(command);
         return CreatedAtAction(nameof(GetAsync), new { id }, null);
     }
 
@@ -27,7 +25,7 @@ public class CompetitionController(
     public async Task<IActionResult> GetAllAsync([FromQuery]string? search)
     {
         var query = new GetCompetitionListQuery(search);
-        var result = await _mediator.Send(query);
+        var result = await mediator.Send(query);
         return Ok(result);
     }
 
@@ -37,7 +35,7 @@ public class CompetitionController(
     public async Task<IActionResult> GetAsync(Guid id)
     {
         var query = new GetCompetitionQuery(id);
-        var dto = await _mediator.Send(query);
+        var dto = await mediator.Send(query);
         return Ok(dto);
     }
 
@@ -48,7 +46,7 @@ public class CompetitionController(
     public async Task<IActionResult> OpenRegistrationAsync(Guid id)
     {
         var command = new OpenRegistrationCommand(id);
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 
@@ -59,7 +57,7 @@ public class CompetitionController(
     public async Task<IActionResult> CompleteRegistrationAsync(Guid id)
     {
         var command = new CompleteRegistrationCommand(id);
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 
@@ -70,7 +68,7 @@ public class CompetitionController(
     public async Task<IActionResult> ChangeMaxCompetitors(Guid id, [FromBody]ChangeMaxCompetitorsRequestDto dto)
     {
         var command = new ChangeMaxCompetitorsCommand(id, dto.MaxCompetitors);
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 
@@ -81,7 +79,7 @@ public class CompetitionController(
     public async Task<IActionResult> AddCheckpoint(Guid id, [FromBody] AddCheckpointRequestDto dto)
     {
         var command = new AddCheckpointRequestCommand(id, dto.TrackPointAmount, dto.TrackPointUnit);
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 
@@ -92,7 +90,7 @@ public class CompetitionController(
     public async Task<IActionResult> RemoveCheckpoint(Guid id, Guid checkpointId)
     {
         var command = new RemoveCheckpointCommand(id, checkpointId);
-        await _mediator.Send(command);
+        await mediator.Send(command);
         return NoContent();
     }
 }

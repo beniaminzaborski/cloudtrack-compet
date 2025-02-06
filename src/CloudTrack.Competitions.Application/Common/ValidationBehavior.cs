@@ -27,7 +27,7 @@ internal sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValid
                 validationFailure.ErrorMessage))
             .ToList();
 
-        if (errors.Any())
+        if (errors.Count != 0)
         {
             throw new Exceptions.ValidationException(errors);
         }

@@ -4,35 +4,16 @@ public abstract class Entity<TId> : IDispatchableDomainEventsEntity
 {
     public TId Id { get; protected set; }
 
-    public override int GetHashCode()
-    {
-        return Id.GetHashCode();
-    }
+    public override int GetHashCode() => Id.GetHashCode();
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is Entity<TId> entity)
-        {
-            return entity.Id.Equals(Id);
-        }
+    public override bool Equals(object? obj) =>
+        obj is Entity<TId> entity && entity.Id != null && entity.Id.Equals(Id);
+    
+    private readonly IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
 
-        return false;
-    }
+    protected void QueueDomainEvent(IDomainEvent @event) => _domainEvents.Add(@event);
 
-    private IList<IDomainEvent> _domainEvents = new List<IDomainEvent>();
+    public IReadOnlyCollection<IDomainEvent> GetDomainEvents() => _domainEvents.AsReadOnly();
 
-    public void QueueDomainEvent(IDomainEvent @event)
-    {
-        _domainEvents.Add(@event);
-    }
-
-    public IReadOnlyCollection<IDomainEvent> GetDomainEvents()
-    {
-        return _domainEvents.AsReadOnly();
-    }
-
-    public void ClearDomainEvents()
-    {
-        _domainEvents.Clear();
-    }
+    public void ClearDomainEvents() => _domainEvents.Clear();
 }

@@ -9,12 +9,9 @@ public class AddCheckpointRequestCommandHandler(
     IUnitOfWork unitOfWork,
     ICompetitionRepository competitionRepository) : IRequestHandler<AddCheckpointRequestCommand>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ICompetitionRepository _competitionRepository = competitionRepository;
-
     public async Task Handle(AddCheckpointRequestCommand request, CancellationToken cancellationToken)
     {
-        var competition = await _competitionRepository.GetAsync(CompetitionId.From(request.CompetitionId), x => x.Checkpoints) ?? throw new NotFoundException();
+        var competition = await competitionRepository.GetAsync(CompetitionId.From(request.CompetitionId), x => x.Checkpoints) ?? throw new NotFoundException();
 
         if (!Enum.TryParse<DistanceUnit>(request.TrackPointUnit, out var distanceUnit)) throw new Common.Exceptions.ValidationException("Distance unit is incorrect");
 
@@ -22,7 +19,7 @@ public class AddCheckpointRequestCommandHandler(
         {
             competition.AddCheckpoint(
                 new Checkpoint(
-            CheckpointId.From(Guid.NewGuid()),
+                    CheckpointId.From(Guid.NewGuid()),
                     CompetitionId.From(request.CompetitionId),
                     new Distance(request.TrackPointAmount, distanceUnit)));
         }
@@ -35,7 +32,7 @@ public class AddCheckpointRequestCommandHandler(
             throw new Common.Exceptions.ValidationException("Cannot add a checkpoint because distance amount is invalid");
         }
 
-        await _competitionRepository.UpdateAsync(competition);
-        await _unitOfWork.CommitAsync();
+        await competitionRepository.UpdateAsync(competition);
+        await unitOfWork.CommitAsync();
     }
 }

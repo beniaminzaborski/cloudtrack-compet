@@ -14,10 +14,10 @@ using Npgsql;
 
 internal class Program
 {
-    const string serviceName = "CloudTrack-Competitions-Job";
-    const string serviceVersion = "1.0.0";
+    private const string ServiceName = "CloudTrack-Competitions-Job";
+    private const string ServiceVersion = "1.0.0";
 
-    private static readonly ActivitySource RootActivitySource = new(serviceName, serviceVersion);
+    private static readonly ActivitySource RootActivitySource = new(ServiceName, ServiceVersion);
 
     private static async Task Main(string[] args)
     {
@@ -26,7 +26,7 @@ internal class Program
         var logger = CreateLogger();
         var services = CreateServices(config);
 
-        IMediator _mediator = services.GetRequiredService<IMediator>();
+        IMediator mediator = services.GetRequiredService<IMediator>();
 
         using (var activity = RootActivitySource.StartActivity("GetOpenedForRegistrationCompetitionListQuery"))
         {
@@ -35,7 +35,7 @@ internal class Program
             activity?.AddEvent(new ActivityEvent("Fetching competitions"));
             
             var query = new GetOpenedForRegistrationCompetitionListQuery();
-            var onlyOpenedCompetitions = await _mediator.Send(query);
+            var onlyOpenedCompetitions = await mediator.Send(query);
             
             activity?.AddEvent(new ActivityEvent("Competitions fetched"));
 
@@ -55,7 +55,7 @@ internal class Program
 
                     logger.LogInformation("Completing registration for {Name}.", competition.Name);
                     var command = new CompleteRegistrationCommand(competition.Id);
-                    await _mediator.Send(command);
+                    await mediator.Send(command);
                     logger.LogInformation("Registration completed for {Name}.", competition.Name);
                     nestedActivity?.AddEvent(new ActivityEvent($"Registration completed for {competition.Name}"));
                 }
@@ -94,7 +94,7 @@ internal class Program
         var appInsightsConnectionString = config.GetConnectionString("ApplicationInsights");
 
         return Sdk.CreateTracerProviderBuilder()
-            .AddSource(serviceName)
+            .AddSource(ServiceName)
             .AddNpgsql()
             .AddMassTransitInstrumentation().AddSource("MassTransit")
             .AddConsoleExporter()

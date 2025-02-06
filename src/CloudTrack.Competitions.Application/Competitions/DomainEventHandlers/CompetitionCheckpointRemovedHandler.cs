@@ -10,14 +10,11 @@ internal class CompetitionCheckpointRemovedHandler(
     ILogger<CompetitionCheckpointRemovedHandler> logger,
     IPublishEndpoint publishEndpoint) : INotificationHandler<CompetitionCheckpointRemoved>
 {
-    private readonly ILogger<CompetitionCheckpointRemovedHandler> _logger = logger;
-    private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
-
     public async Task Handle(CompetitionCheckpointRemoved domainEvent, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"<Application Layer> checkpoint {domainEvent.CheckpointId} from competition {domainEvent.CompetitionId} removed!");
+        logger.LogInformation($"<Application Layer> checkpoint {domainEvent.CheckpointId} from competition {domainEvent.CompetitionId} removed!");
 
-        await _publishEndpoint.Publish(
+        await publishEndpoint.Publish(
             new CompetitionCheckpointRemovedIntegrationEvent(
                 domainEvent.CompetitionId.Value,
                 domainEvent.CheckpointId.Value,

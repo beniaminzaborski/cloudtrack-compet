@@ -9,12 +9,9 @@ internal class OpenRegistrationCommandHandler(
     IUnitOfWork unitOfWork,
     ICompetitionRepository competitionRepository) : IRequestHandler<OpenRegistrationCommand>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ICompetitionRepository _competitionRepository = competitionRepository;
-
     public async Task Handle(OpenRegistrationCommand request, CancellationToken cancellationToken)
     {
-        var competition = await _competitionRepository.GetAsync(CompetitionId.From(request.Id), i => i.Checkpoints) ?? throw new NotFoundException();
+        var competition = await competitionRepository.GetAsync(CompetitionId.From(request.Id), i => i.Checkpoints) ?? throw new NotFoundException();
         
         try
         {
@@ -25,7 +22,7 @@ internal class OpenRegistrationCommandHandler(
             throw new Common.Exceptions.ValidationException("Cannot open registration");
         }
 
-        await _competitionRepository.UpdateAsync(competition);
-        await _unitOfWork.CommitAsync();
+        await competitionRepository.UpdateAsync(competition);
+        await unitOfWork.CommitAsync();
     }
 }

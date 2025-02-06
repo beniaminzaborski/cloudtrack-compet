@@ -76,21 +76,21 @@ public class Competition : Entity<CompetitionId>, IAggregateRoot
 
     public void ChangeMaxCompetitors(int maxCompetitors)
     {
-        if ((Status == CompetitionStatus.Draft
-            || Status == CompetitionStatus.OpenedForRegistration)
-            && maxCompetitors > MaxCompetitors)
+        switch (Status)
         {
-            MaxCompetitors = maxCompetitors;
-            QueueDomainEvent(new CompetitionMaxCompetitorsIncreased(Id, MaxCompetitors));
+            case CompetitionStatus.Draft or CompetitionStatus.OpenedForRegistration
+                when maxCompetitors > MaxCompetitors:
+                MaxCompetitors = maxCompetitors;
+                QueueDomainEvent(new CompetitionMaxCompetitorsIncreased(Id, MaxCompetitors));
+                break;
+            case CompetitionStatus.Draft
+                when maxCompetitors < MaxCompetitors:
+                MaxCompetitors = maxCompetitors;
+                QueueDomainEvent(new CompetitionMaxCompetitorsDecreased(Id, MaxCompetitors));
+                break;
+            default:
+                throw new CompetitionMaxCompetitorsChangeNotAllowedException();
         }
-        else if (Status == CompetitionStatus.Draft
-            && maxCompetitors < MaxCompetitors)
-        {
-            MaxCompetitors = maxCompetitors;
-            QueueDomainEvent(new CompetitionMaxCompetitorsDecreased(Id, MaxCompetitors));
-        }
-        else
-            throw new CompetitionMaxCompetitorsChangeNotAllowedException();
     }
 
     private Checkpoint CreateStartLineCheckpoint()
