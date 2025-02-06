@@ -2,19 +2,14 @@
 
 namespace CloudTrack.Competitions.Application.Competitions;
 
-public sealed record CheckpointDto
-{
-    public Guid Id { get; init; }
-    public decimal TrackPointAmount { get; init; }
-    public string TrackPointUnit { get; init; }
-
-    public static CheckpointDto FromCheckpoint(Checkpoint checkpoint)
-    {
-        return new CheckpointDto()
-        {
-            Id = checkpoint.Id.Value,
-            TrackPointAmount = checkpoint.TrackPoint.Amount,
-            TrackPointUnit = checkpoint.TrackPoint.Unit.ToString()
-        };
-    }
+public sealed record CheckpointDto(
+    Guid Id,
+    decimal TrackPointAmount,
+    string TrackPointUnit)
+{ 
+    public static CheckpointDto FromCheckpoint(Checkpoint checkpoint) =>
+        new(
+            checkpoint.Id.Value,
+            checkpoint.TrackPoint.Amount,
+            checkpoint.TrackPoint.Unit.ToString());
 }

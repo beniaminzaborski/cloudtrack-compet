@@ -2,17 +2,13 @@
 
 namespace CloudTrack.Competitions.Application.Competitions;
 
-public sealed record DistanceDto
+public sealed record DistanceDto(
+    decimal Amount,
+    string Unit)
 {
-    public decimal Amount { get; init; }
-    public string Unit { get; init; }
-
-    public static DistanceDto FromDistance(Distance competitionDistance)
-    {
-        return new DistanceDto
-        {
-            Amount =  competitionDistance.Amount,
-            Unit = competitionDistance.Unit.ToString()
-        };
-    }
+    public static DistanceDto FromDistance(Distance competitionDistance) =>
+        new(
+            competitionDistance.Amount,
+            competitionDistance.Unit.ToString()
+        );
 }

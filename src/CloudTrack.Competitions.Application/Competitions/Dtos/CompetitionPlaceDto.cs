@@ -2,19 +2,15 @@
 
 namespace CloudTrack.Competitions.Application.Competitions;
 
-public sealed record CompetitionPlaceDto
+public sealed record CompetitionPlaceDto(
+    string City,
+    decimal Latitude, 
+    decimal Longitute)
 {
-    public string City { get; init; }
-    public decimal Latitude { get; init; }
-    public decimal Longitute { get; init; }
-
-    public static CompetitionPlaceDto FromCompetitionPlace(CompetitionPlace competitionPlace)
-    {
-        return new CompetitionPlaceDto()
-        {
-            City = competitionPlace.City,
-            Latitude = competitionPlace.Localization.Latitude,
-            Longitute = competitionPlace.Localization.Longitude
-        };
-    }
+    public static CompetitionPlaceDto FromCompetitionPlace(CompetitionPlace competitionPlace) =>
+        new(
+            competitionPlace.City,
+            competitionPlace.Localization.Latitude,
+            competitionPlace.Localization.Longitude
+        );
 }
