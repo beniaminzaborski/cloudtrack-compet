@@ -6,9 +6,11 @@ public static class DistanceHelper
 {
     private static decimal marathonDistanceInKilometers = 42.195m;
 
-    public static Distance Halfmarathon() => new Distance(Marathon().Amount / 2, DistanceUnit.Kilometers);
+    public static Distance Halfmarathon() => 
+        new(Marathon().Amount / 2, DistanceUnit.Kilometers);
 
-    public static Distance Marathon() => new Distance(marathonDistanceInKilometers, DistanceUnit.Kilometers);
+    public static Distance Marathon() => 
+        new(marathonDistanceInKilometers, DistanceUnit.Kilometers);
 
     public static Distance From(decimal amount, string unit)
     {

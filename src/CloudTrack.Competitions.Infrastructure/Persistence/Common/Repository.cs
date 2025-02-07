@@ -5,16 +5,11 @@ using System.Linq.Expressions;
 
 namespace CloudTrack.Competitions.Infrastructure.Persistence.Common;
 
-internal abstract class Repository<TEntity, TId, TDbContext> : IRepository<TEntity, TId>
+internal abstract class Repository<TEntity, TId, TDbContext>(TDbContext dbContext) : IRepository<TEntity, TId>
     where TEntity : Entity<TId>, IAggregateRoot
     where TDbContext : DbContext, IUnitOfWork
 {
-    protected readonly TDbContext _dbContext;
-
-    protected Repository(TDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    protected readonly TDbContext _dbContext = dbContext;
 
     public async Task<TId> CreateAsync(TEntity entity)
     {
@@ -24,11 +19,7 @@ internal abstract class Repository<TEntity, TId, TDbContext> : IRepository<TEnti
 
     public async Task DeleteAsync(TId id)
     {
-        var entity = await GetAsync(id);
-        if (entity is null)
-        {
-            throw new InvalidOperationException("Cannot delete entity because it does not exist");
-        }
+        var entity = await GetAsync(id) ?? throw new InvalidOperationException("Cannot delete entity because it does not exist");
         _dbContext.Set<TEntity>().Remove(entity);
     }
 
@@ -58,8 +49,6 @@ internal abstract class Repository<TEntity, TId, TDbContext> : IRepository<TEnti
         return await query.FirstOrDefaultAsync();
     }
 
-    public async Task UpdateAsync(TEntity entity)
-    {
+    public async Task UpdateAsync(TEntity entity) => 
         _dbContext.Set<TEntity>().Update(entity);
-    }
 }

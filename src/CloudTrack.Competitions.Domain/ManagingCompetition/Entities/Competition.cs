@@ -52,8 +52,7 @@ public class Competition : Entity<CompetitionId>, IAggregateRoot
 
     public void RemoveCheckpoint(CheckpointId checkpointId)
     {
-        var checkpoint = _checkpoints.FirstOrDefault(c => c.Id.Equals(checkpointId));
-        if (checkpoint is null) throw new CheckpointNotExistsException();
+        var checkpoint = _checkpoints.FirstOrDefault(c => c.Id.Equals(checkpointId)) ?? throw new CheckpointNotExistsException();
         _checkpoints.Remove(checkpoint);
         QueueDomainEvent(new CompetitionCheckpointRemoved(Id, checkpoint.Id, checkpoint.TrackPoint));
     }
