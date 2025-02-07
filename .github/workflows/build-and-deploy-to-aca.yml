@@ -1,4 +1,4 @@
-name: Build & deploy job in dev
+name: Build & deploy service
 
 on:
   workflow_dispatch: {}
@@ -7,11 +7,7 @@ on:
     - main
     paths-ignore:
     - 'src/Shared/**'
-    - 'src/CloudTrack.Competitions.AppHost/**'
-    - 'CloudTrack.Competitions.Application/**'
-    - 'CloudTrack.Competitions.Domain/**'
-    - 'CloudTrack.Competitions.Infrastructure/**'
-    - 'CloudTrack.Competitions.WebAPI/**'
+    - 'src/Jobs/**'
     - 'README.ME'
     - 'doc/**'
     - 'test/**'
@@ -20,10 +16,10 @@ jobs:
   build-service-in-dev:
     uses: ./.github/workflows/.script-build-service-docker-image-and-push-into-acr.yml
     with:
-      ENVIRONMENT_TYPE: dev
+      ENVIRONMENT_TYPE: demo
       PROJECT_NAME: cloudtrack
-      SERVICE_NAME: competjob
-      DOCKERFILE_PATH: ./src/Jobs/CloudTrack.Competitions.CompleteRegistrationsJob/Dockerfile
+      SERVICE_NAME: compet
+      DOCKERFILE_PATH: ./src/CloudTrack.Competitions.WebAPI/Dockerfile
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
@@ -34,9 +30,10 @@ jobs:
     uses: ./.github/workflows/.script-deploy-service-into-aca.yml
     needs: build-service-in-dev
     with:
-      ENVIRONMENT_TYPE: dev
+      ENVIRONMENT_TYPE: demo
+      RESOURCE_GROUP: ${{ vars.AZURE_GROUP }}
       PROJECT_NAME: cloudtrack
-      SERVICE_NAME: competjob
+      SERVICE_NAME: compet
     secrets:
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       REGISTRY_LOGIN_SERVER: ${{ secrets.REGISTRY_LOGIN_SERVER }}
