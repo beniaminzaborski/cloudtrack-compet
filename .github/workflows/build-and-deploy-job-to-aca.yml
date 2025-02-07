@@ -17,7 +17,7 @@ on:
     - 'test/**'
 
 jobs:
-  build-service-in-dev:
+  build-service:
     uses: ./.github/workflows/.script-build-service-docker-image-and-push-into-acr.yml
     with:
       ENVIRONMENT_TYPE: demo
@@ -30,7 +30,7 @@ jobs:
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
 
-  deploy-service-in-dev:
+  deploy-service:
     uses: ./.github/workflows/.script-deploy-service-into-aca.yml
     needs: build-service-in-dev
     with:
