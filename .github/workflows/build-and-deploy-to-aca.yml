@@ -8,7 +8,7 @@ on:
     paths-ignore:
     - 'src/Shared/**'
     - 'src/Jobs/**'
-    - 'README.ME'
+    - 'README.md'
     - 'doc/**'
     - 'test/**'
 

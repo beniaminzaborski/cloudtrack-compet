@@ -12,7 +12,7 @@ on:
     - 'CloudTrack.Competitions.Domain/**'
     - 'CloudTrack.Competitions.Infrastructure/**'
     - 'CloudTrack.Competitions.WebAPI/**'
-    - 'README.ME'
+    - 'README.md'
     - 'doc/**'
     - 'test/**'
 
