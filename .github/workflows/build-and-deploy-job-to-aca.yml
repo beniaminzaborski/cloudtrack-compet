@@ -32,7 +32,7 @@ jobs:
 
   deploy-service:
     uses: ./.github/workflows/.script-deploy-service-into-aca.yml
-    needs: build-service-in-dev
+    needs: build-service
     with:
       ENVIRONMENT_TYPE: demo
       RESOURCE_GROUP: ${{ vars.AZURE_GROUP }}
