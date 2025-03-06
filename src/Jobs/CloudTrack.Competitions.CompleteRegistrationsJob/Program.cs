@@ -11,6 +11,7 @@ using OpenTelemetry;
 using OpenTelemetry.Trace;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Npgsql;
+using CloudTrack.Competitions.Application.Competitions;
 
 internal class Program
 {
@@ -28,88 +29,103 @@ internal class Program
 
         IMediator mediator = services.GetRequiredService<IMediator>();
 
-        using (var activity = RootActivitySource.StartActivity("GetOpenedForRegistrationCompetitionListQuery"))
-        {
-            activity?.SetStartTime(DateTime.UtcNow);
-
-            activity?.AddEvent(new ActivityEvent("Fetching competitions"));
-            
-            var query = new GetOpenedForRegistrationCompetitionListQuery();
-            var onlyOpenedCompetitions = await mediator.Send(query);
-            
-            activity?.AddEvent(new ActivityEvent("Competitions fetched"));
-
-            var tomorrow = DateTime.UtcNow.Date.AddDays(1);
-
-            foreach (var competition in onlyOpenedCompetitions)
-            {
-                using var nestedActivity = RootActivitySource.StartActivity("CompleteRegistrationCommand", ActivityKind.Internal, activity.Context);
-                nestedActivity?.SetStartTime(DateTime.UtcNow);
-
-                if (competition.StartAt.Date == tomorrow)
-                {
-                    nestedActivity?.SetTag("Id", competition.Id);
-                    nestedActivity?.SetTag("Name", competition.Name);
-                    nestedActivity?.SetTag("Status", competition.Status);
-                    nestedActivity?.AddEvent(new ActivityEvent($"Completing registration for {competition.Name}"));
-
-                    logger.LogInformation("Completing registration for {Name}.", competition.Name);
-                    var command = new CompleteRegistrationCommand(competition.Id);
-                    await mediator.Send(command);
-                    logger.LogInformation("Registration completed for {Name}.", competition.Name);
-                    nestedActivity?.AddEvent(new ActivityEvent($"Registration completed for {competition.Name}"));
-                }
-                else
-                {
-                    logger.LogInformation("Nothing to do with {Name}.", competition.Name);
-                }
-
-                nestedActivity?.SetEndTime(DateTime.UtcNow);
-                nestedActivity?.SetStatus(ActivityStatusCode.Ok);
-            }
-
-            activity?.SetEndTime(DateTime.UtcNow);
-            activity?.SetStatus(ActivityStatusCode.Ok);
-        }
+        await ProcessCompetitions(mediator, logger);
 
         tracerProvider.Dispose();
     }
 
-    private static IConfiguration CreateConfiguration()
+    private static async Task ProcessCompetitions(IMediator mediator, ILogger logger)
     {
-        return new ConfigurationBuilder()
+        using var activity = RootActivitySource.StartActivity("GetOpenedForRegistrationCompetitionListQuery");
+        activity?.SetStartTime(DateTime.UtcNow);
+        activity?.AddEvent(new ActivityEvent("Fetching competitions"));
+
+        var competitions = await FetchCompetitions(mediator);
+
+        activity?.AddEvent(new ActivityEvent("Competitions fetched"));
+        await CompleteRegistrations(mediator, logger, competitions);
+
+        activity?.SetEndTime(DateTime.UtcNow);
+        activity?.SetStatus(ActivityStatusCode.Ok);
+    }
+
+    private static async Task<IEnumerable<CompetitionDto>> FetchCompetitions(IMediator mediator)
+    {
+        var query = new GetOpenedForRegistrationCompetitionListQuery();
+        return await mediator.Send(query);
+    }
+
+    private static async Task CompleteRegistrations(IMediator mediator, ILogger logger, IEnumerable<CompetitionDto> competitions)
+    {
+        var tomorrow = DateTime.UtcNow.Date.AddDays(1);
+
+        foreach (var competition in competitions)
+        {
+            using var nestedActivity = StartNestedActivity("CompleteRegistrationCommand", competition);
+            if (competition.StartAt.Date == tomorrow)
+            {
+                await CompleteRegistration(mediator, logger, competition, nestedActivity);
+            }
+            else
+            {
+                logger.LogInformation("Nothing to do with {Name}.", competition.Name);
+            }
+
+            EndActivity(nestedActivity);
+        }
+    }
+
+    private static async Task CompleteRegistration(IMediator mediator, ILogger logger, CompetitionDto competition, Activity? activity)
+    {
+        activity?.AddEvent(new ActivityEvent($"Completing registration for {competition.Name}"));
+        logger.LogInformation("Completing registration for {Name}.", competition.Name);
+
+        var command = new CompleteRegistrationCommand(competition.Id);
+        await mediator.Send(command);
+
+        logger.LogInformation("Registration completed for {Name}.", competition.Name);
+        activity?.AddEvent(new ActivityEvent($"Registration completed for {competition.Name}"));
+    }
+
+    private static Activity? StartNestedActivity(string name, CompetitionDto competition)
+    {
+        var nestedActivity = RootActivitySource.StartActivity(name, ActivityKind.Internal);
+        nestedActivity?.SetStartTime(DateTime.UtcNow);
+        nestedActivity?.SetTag("Id", competition.Id);
+        nestedActivity?.SetTag("Name", competition.Name);
+        nestedActivity?.SetTag("Status", competition.Status);
+        return nestedActivity;
+    }
+
+    private static void EndActivity(Activity? activity)
+    {
+        if (activity == null) return;
+        activity.SetEndTime(DateTime.UtcNow);
+        activity.SetStatus(ActivityStatusCode.Ok);
+    }
+
+    private static IConfiguration CreateConfiguration() => 
+        new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
             .AddEnvironmentVariables()
             .Build();
-    }
 
-    private static ILogger CreateLogger()
-    {
-        return LoggerFactory.Create(builder => builder.AddConsole())
+    private static ILogger CreateLogger() => 
+        LoggerFactory.Create(builder => builder.AddConsole())
             .CreateLogger("Job");
-    }
 
-    private static TracerProvider CreateTracerProvider(IConfiguration config)
-    {
-        var appInsightsConnectionString = config.GetConnectionString("ApplicationInsights");
-
-        return Sdk.CreateTracerProviderBuilder()
+    private static TracerProvider CreateTracerProvider(IConfiguration config) => 
+        Sdk.CreateTracerProviderBuilder()
             .AddSource(ServiceName)
             .AddNpgsql()
             .AddMassTransitInstrumentation().AddSource("MassTransit")
             .AddConsoleExporter()
-            .AddAzureMonitorTraceExporter(cfg => cfg.ConnectionString = appInsightsConnectionString)
+            .AddAzureMonitorTraceExporter(cfg => cfg.ConnectionString = config.GetConnectionString("ApplicationInsights"))
             .Build();
-    }
 
-    private static ServiceProvider CreateServices(IConfiguration config)
-    {
-        IServiceCollection services = new ServiceCollection();
-        services
+    private static ServiceProvider CreateServices(IConfiguration config) => 
+        new ServiceCollection()
             .AddApplication()
-            .AddInfrastructure(config);
-
-        return services
+            .AddInfrastructure(config)
             .BuildServiceProvider();
-    }
 }
