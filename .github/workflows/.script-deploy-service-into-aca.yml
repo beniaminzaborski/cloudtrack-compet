@@ -13,6 +13,10 @@ on:
       SERVICE_NAME:
         required: true
         type: string
+      IS_JOB:
+        required: false
+        type: boolean
+        default: false
     secrets:
       AZURE_CREDENTIALS:
         required: true
@@ -50,8 +54,18 @@ jobs:
 
     # Create the new revision in Azure Container App
     - name: Deploy to Azure Container App
+      if: inputs.IS_JOB = false
       run: |
         az containerapp update \
+        --name ca-${{ inputs.PROJECT_NAME }}-${{ inputs.SERVICE_NAME }}-${{ inputs.ENVIRONMENT_TYPE }} \
+        --resource-group "${{ inputs.RESOURCE_GROUP }}" \
+        --image "${{ steps.metadata.outputs.tags }}"
+
+    # Create the new revision in Azure Container App Job
+    - name: Deploy to Azure Container App
+      if: inputs.IS_JOB = true
+      run: |
+        az containerapp job update \
         --name ca-${{ inputs.PROJECT_NAME }}-${{ inputs.SERVICE_NAME }}-${{ inputs.ENVIRONMENT_TYPE }} \
         --resource-group "${{ inputs.RESOURCE_GROUP }}" \
         --image "${{ steps.metadata.outputs.tags }}"
