@@ -54,7 +54,7 @@ jobs:
 
     # Create the new revision in Azure Container App
     - name: Deploy to Azure Container App
-      if: inputs.IS_JOB = false
+      if: inputs.IS_JOB == false
       run: |
         az containerapp update \
         --name ca-${{ inputs.PROJECT_NAME }}-${{ inputs.SERVICE_NAME }}-${{ inputs.ENVIRONMENT_TYPE }} \
@@ -63,7 +63,7 @@ jobs:
 
     # Create the new revision in Azure Container App Job
     - name: Deploy to Azure Container App
-      if: inputs.IS_JOB = true
+      if: inputs.IS_JOB == true
       run: |
         az containerapp job update \
         --name ca-${{ inputs.PROJECT_NAME }}-${{ inputs.SERVICE_NAME }}-${{ inputs.ENVIRONMENT_TYPE }} \
